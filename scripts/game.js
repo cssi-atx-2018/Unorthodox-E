@@ -77,57 +77,30 @@ function setup() {
   app.stage.addChild(sprite)
 
   let left = keyboard(37)
-  up = keyboard(38)
-  right = keyboard(39)
-  down = keyboard(40)
+      right = keyboard(39)
 
-  //Left arrow key `press` method
   left.press = () => {
-  //Change the sprite's velocity when the key is pressed
-  sprite.vx = -5;
-  sprite.vy = 0;
+    if(sprite.x > 0){
+      sprite.vx = -5;
+      sprite.vy = 0;
+    }
   };
-
-  //Left arrow key `release` method
   left.release = () => {
-  //If the left arrow has been released, and the right arrow isn't down,
-  //and the sprite isn't moving vertically:
-  //Stop the sprite
-  if (!right.isDown && sprite.vy === 0) {
-  sprite.vx = 0;
-  }
-  };
-
-  //Up
-  up.press = () => {
-  sprite.vy = -5;
-  sprite.vx = 0;
-  };
-  up.release = () => {
-  if (!down.isDown && sprite.vx === 0) {
-  sprite.vy = 0;
-  }
+    if (!right.isDown && sprite.vy === 0) {
+      sprite.vx = 0;
+    }
   };
 
   //Right
   right.press = () => {
-  sprite.vx = 5;
-  sprite.vy = 0;
+    if(sprite.x < app.width){
+      sprite.vx = 5;
+      sprite.vy = 0;
+    }
   };
   right.release = () => {
   if (!left.isDown && sprite.vy === 0) {
   sprite.vx = 0;
-  }
-  };
-
-  //Down
-  down.press = () => {
-  sprite.vy = 5;
-  sprite.vx = 0;
-  };
-  down.release = () => {
-  if (!up.isDown && sprite.vx === 0) {
-  sprite.vy = 0;
   }
   };
 
