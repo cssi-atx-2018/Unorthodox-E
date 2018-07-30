@@ -7,6 +7,8 @@ handlers:
   static_dir: pixi
 - url: /images
   static_dir: images
+- url: /scripts
+  static_dir: scripts
 - url: /.*
   script: main.app
 
