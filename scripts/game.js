@@ -1,6 +1,6 @@
 let type = "WebGL"
 if(!PIXI.utils.isWebGLSupported()){
-type = 'canvas'
+  type = 'canvas'
 }
 PIXI.utils.sayHello(type)
 //Create a Pixi Application
@@ -21,8 +21,8 @@ app.renderer.resize(512,512)
 document.body.appendChild(app.view)
 
 PIXI.loader
-.add('images/pepe.png')
-.load(setup)
+  .add('images/pepe.png')
+  .load(setup)
 
 //State is a variable that represents the state of the app
 //If state is assigned to play that means that the appliaciton
@@ -30,117 +30,117 @@ PIXI.loader
 
 //This funtion can be used to create keyboard input
 function keyboard(keyCode) {
-let key = {};
-key.code = keyCode;
-key.isDown = false;
-key.isUp = true;
-key.press = undefined;
-key.release = undefined;
-//The `downHandler`
-key.downHandler = event => {
-if (event.keyCode === key.code) {
-if (key.isUp && key.press) key.press();
-key.isDown = true;
-key.isUp = false;
-}
-event.preventDefault();
-};
+  let key = {};
+  key.code = keyCode;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = undefined;
+  key.release = undefined;
+  //The `downHandler`
+  key.downHandler = event => {
+  if (event.keyCode === key.code) {
+  if (key.isUp && key.press) key.press();
+  key.isDown = true;
+  key.isUp = false;
+  }
+  event.preventDefault();
+  };
 
-//The `upHandler`
-key.upHandler = event => {
-if (event.keyCode === key.code) {
-if (key.isDown && key.release) key.release();
-key.isDown = false;
-key.isUp = true;
-}
-event.preventDefault();
-};
+  //The `upHandler`
+  key.upHandler = event => {
+  if (event.keyCode === key.code) {
+  if (key.isDown && key.release) key.release();
+  key.isDown = false;
+  key.isUp = true;
+  }
+  event.preventDefault();
+  };
 
-//Attach event listeners
-window.addEventListener(
-"keydown", key.downHandler.bind(key), false
-);
-window.addEventListener(
-"keyup", key.upHandler.bind(key), false
-);
-return key;
+  //Attach event listeners
+  window.addEventListener(
+  "keydown", key.downHandler.bind(key), false
+  );
+  window.addEventListener(
+  "keyup", key.upHandler.bind(key), false
+  );
+  return key;
 }
 
 let sprite, state
 
 function setup() {
-sprite = new PIXI.Sprite(PIXI.loader.resources['images/pepe.png'].texture)
-sprite.vy = 0
-sprite.vx = 0
-sprite.scale.y = .5
-sprite.scale.x = .5
-app.stage.addChild(sprite)
+  sprite = new PIXI.Sprite(PIXI.loader.resources['images/pepe.png'].texture)
+  sprite.vy = 0
+  sprite.vx = 0
+  sprite.scale.y = .5
+  sprite.scale.x = .5
+  app.stage.addChild(sprite)
 
-let left = keyboard(37)
-up = keyboard(38)
-right = keyboard(39)
-down = keyboard(40)
+  let left = keyboard(37)
+  up = keyboard(38)
+  right = keyboard(39)
+  down = keyboard(40)
 
-//Left arrow key `press` method
-left.press = () => {
-//Change the sprite's velocity when the key is pressed
-sprite.vx = -5;
-sprite.vy = 0;
-};
+  //Left arrow key `press` method
+  left.press = () => {
+  //Change the sprite's velocity when the key is pressed
+  sprite.vx = -5;
+  sprite.vy = 0;
+  };
 
-//Left arrow key `release` method
-left.release = () => {
-//If the left arrow has been released, and the right arrow isn't down,
-//and the sprite isn't moving vertically:
-//Stop the sprite
-if (!right.isDown && sprite.vy === 0) {
-sprite.vx = 0;
-}
-};
+  //Left arrow key `release` method
+  left.release = () => {
+  //If the left arrow has been released, and the right arrow isn't down,
+  //and the sprite isn't moving vertically:
+  //Stop the sprite
+  if (!right.isDown && sprite.vy === 0) {
+  sprite.vx = 0;
+  }
+  };
 
-//Up
-up.press = () => {
-sprite.vy = -5;
-sprite.vx = 0;
-};
-up.release = () => {
-if (!down.isDown && sprite.vx === 0) {
-sprite.vy = 0;
-}
-};
+  //Up
+  up.press = () => {
+  sprite.vy = -5;
+  sprite.vx = 0;
+  };
+  up.release = () => {
+  if (!down.isDown && sprite.vx === 0) {
+  sprite.vy = 0;
+  }
+  };
 
-//Right
-right.press = () => {
-sprite.vx = 5;
-sprite.vy = 0;
-};
-right.release = () => {
-if (!left.isDown && sprite.vy === 0) {
-sprite.vx = 0;
-}
-};
+  //Right
+  right.press = () => {
+  sprite.vx = 5;
+  sprite.vy = 0;
+  };
+  right.release = () => {
+  if (!left.isDown && sprite.vy === 0) {
+  sprite.vx = 0;
+  }
+  };
 
-//Down
-down.press = () => {
-sprite.vy = 5;
-sprite.vx = 0;
-};
-down.release = () => {
-if (!up.isDown && sprite.vx === 0) {
-sprite.vy = 0;
-}
-};
+  //Down
+  down.press = () => {
+  sprite.vy = 5;
+  sprite.vx = 0;
+  };
+  down.release = () => {
+  if (!up.isDown && sprite.vx === 0) {
+  sprite.vy = 0;
+  }
+  };
 
-state = play
-app.ticker.add(delta => gameLoop(delta))
+  state = play
+  app.ticker.add(delta => gameLoop(delta))
 
-}
+  }
 
-function gameLoop(delta){
-state(delta)
+  function gameLoop(delta){
+  state(delta)
 }
 
 function play(delta){
-sprite.y += sprite.vy
-sprite.x += sprite.vx
+  sprite.y += sprite.vy
+  sprite.x += sprite.vx
 }
