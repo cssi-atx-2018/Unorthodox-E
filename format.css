@@ -1,0 +1,40 @@
+
+
+h1{
+  background-color: powderblue;
+  text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: lightgrey;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+li a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: grey;
+}
+
+.active {
+    background-color: powderblue;
+}
+
+.game{
+    display: block;
+    padding: 10px 100px;
+    margin: 0 auto;
+}
