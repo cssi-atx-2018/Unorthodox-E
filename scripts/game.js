@@ -117,6 +117,7 @@ function hitTestRectangle(r1, r2) {
   }
 
   //`hit` will be either `true` or `false`
+  console.log('you got hit')
   return hit;
 };
 
@@ -145,7 +146,7 @@ function playerContain(sprite, container) {
 //is in the play states. Same thing with pause, main menu, etc.
 let sprite, state
 let car1, car2, car3
-let currentSet, currentCheck
+let currentSet
 
 function setUpCars(){
   car1 = new PIXI.Sprite(PIXI.loader.resources['images/neon_green.png'].texture)
@@ -159,9 +160,13 @@ function setUpCars(){
 
   car2.anchor.y = .5
   car2.anchor.x = .5
+  car2.scale.x = .3
+  car2.scale.y = .3
 
   car3.anchor.y = .5
   car3.anchor.x = .5
+  car3.scale.x = .3
+  car3.scale.y = .3
 }
 
 function setupPlayer() {
@@ -212,51 +217,87 @@ function setup() {
   //this function sets up the car objects
   setUpCars()
 
-  app.stage.addChild(car1)
+  currentSet = new PIXI.Container()
 
   //here the state of the game is set to the play function
   state = play
 
   //pixi's ticker function allows the gameLoop to run 60 times per second
   app.ticker.add(delta => gameLoop(delta))
-  middleCarSet()
+  chooseRandomSet()
 }
 
 function middleCarSet(){
   console.log('The middle Car Set started')
-  currentSet = new PIXI.Container()
   currentSet.addChild(car1)
+  app.stage.addChild(currentSet)
   console.log(currentSet)
   car1.x = appWidth / 2
   car1.y = 0
 
   app.stage.addChild(currentSet)
-  currentCheck = middleCarCheck
 }
 
-function middleCarCheck(){
+function CarCheck(){
   let index = 0
-  for(index = 0; index < 1; index += 1)
+  for(index = 0; index < currentSet.children.length; index += 1)
   {
     currentSet.children[index].y += 3
     if(currentSet.children[index].y > appHeight){
-       currentSet.removeChild(currentSet.children[index])
+      app.stage.removeChild(currentSet)
+      currentSet.removeChildren()
+      chooseRandomSet()
+      return
     }
-  }
-  if(currentSet.children.length === 0){
-    app.stage.removeChild(currentSet)
-    middleCarSet()
-    return
   }
 }
 
 function splitCarSet(){
   console.log('The split car set started')
-  currentSet = new PIXI.Container()
-  currentSet.add(car1)
-  currentSet.add(car2)
+  currentSet.addChild(car1)
+  currentSet.addChild(car3)
+  app.stage.addChild(currentSet)
+  car1.x = appWidth / 3
+  car1.y = 0
+  car3.x = Math.ceil(appWidth * (2/3))
+  car3.y = 0
 
+  app.stage.addChild(currentSet)
 }
+
+function leftPairCarSet(){
+  console.log('the left pair car set started')
+  currentSet.addChild(car1)
+  currentSet.addChild(car2)
+  app.stage.addChild(currentSet)
+  car1.x = appWidth / 3
+  car1.y = 0
+  car2.x = appWidth / 2
+  car2.y = 0
+
+  app.stage.addChild(currentSet)
+}
+
+function rightPairCarSet(){
+  console.log('the right pair car set started')
+  currentSet.addChild(car2)
+  currentSet.addChild(car3)
+  app.stage.addChild(currentSet)
+  car2.x = appWidth / 2
+  car2.y = 0
+  car3.x = Math.ceil(appWidth * (2/3))
+  car3.y = 0
+
+  app.stage.addChild(currentSet)
+}
+
+let sets = [middleCarSet, splitCarSet, leftPairCarSet, rightPairCarSet]
+
+function chooseRandomSet(){
+  let i = Math.floor(Math.random() * sets.length)
+  sets[i]()
+}
+
 
 function gameLoop(delta){
   //the gameLoop funtion runs 60 times per second
@@ -270,15 +311,25 @@ function play(delta){
   //this funtion dictates what happens during the "play state" of the game
   sprite.y += sprite.vy
   sprite.x += sprite.vx
-  currentCheck()
+  CarCheck()
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
 
   if(hitTestRectangle(car1, sprite)){
     state = gameOver
+    return
+  }
+  else if(hitTestRectangle(car2, sprite))
+  {
+    state = gameOver
+    return
+  }
+  else if(hitTestRectangle(car3, sprite)){
+    state = gameOver
+    return
   }
 
 }
 
 function gameOver(delta){
-
+  console.log('game over')
 }
