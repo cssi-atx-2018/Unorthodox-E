@@ -1,146 +1,158 @@
+
+//the following if-statement decides if the browser is going to render
+//the application with WebGL or canvas
 let type = "WebGL"
 if(!PIXI.utils.isWebGLSupported()){
-type = 'canvas'
+  type = 'canvas'
 }
+
+//this print a message on the console. use dev tools to see
 PIXI.utils.sayHello(type)
+
 //Create a Pixi Application
 //There are more properties that can be altered
 //look at the documentation for PIXI.Application
-let app = new PIXI.Application({width: 256, height: 256});
+let appWidth = 512 * 2
+    appHeight = 512 * 1.5
+let app = new PIXI.Application({width: appWidth, height: appHeight});
 app.renderer.backgroundColor = 0x061639
 app.renderer.autoResize = true
-app.renderer.resize(512,512)
-
-//The following lines can be used to fill the whole screen
-// app.renderer.view.style.position = 'absolute'
-// app.renderer.view.style.display = 'block'
-// app.renderer.autoResize = true
-// app.renderer.resize(window.innerWidth, window.innerHeight)
 
 //add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view)
 
+//PIXI.loader takes in paths for images and renders it so that they cna be used
+//for textures
 PIXI.loader
-.add('images/pepe.png')
-.load(setup)
+  .add('images/food_truck.png')
+  .load(setup)
+
+function keyboard(keyCode) {
+  //this funtion can be used to add functionality to keys on the keyboard
+  let key = {};
+  key.code = keyCode;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = undefined;
+  key.release = undefined;
+  //The `downHandler`
+  key.downHandler = event => {
+    if (event.keyCode === key.code) {
+      if (key.isUp && key.press) key.press();
+        key.isDown = true;
+        key.isUp = false;
+      }
+      event.preventDefault();
+  };
+
+  //The `upHandler`
+  key.upHandler = event => {
+    if (event.keyCode === key.code) {
+      if (key.isDown && key.release) key.release();
+        key.isDown = false;
+        key.isUp = true;
+      }
+      event.preventDefault();
+  };
+
+  //Attach event listeners
+  window.addEventListener(
+    "keydown", key.downHandler.bind(key), false
+  );
+  window.addEventListener(
+    "keyup", key.upHandler.bind(key), false
+  );
+  return key;
+}
+
+function playerContain(sprite, container) {
+  //this funtion is used to contain the player
+  let collision = undefined;
+
+  //Left
+  if (sprite.x - sprite.width / 2 < container.x) {
+    sprite.x = sprite.width/2;
+    collision = "left";
+  }
+
+  //Right
+  if (sprite.x + sprite.width / 2 > container.width) {
+    sprite.x = container.width - sprite.width/2;
+    collision = "right";
+  }
+
+  //Return the `collision` value
+  return collision;
+}
 
 //State is a variable that represents the state of the app
 //If state is assigned to play that means that the appliaciton
 //is in the play states. Same thing with pause, main menu, etc.
-
-//This funtion can be used to create keyboard input
-function keyboard(keyCode) {
-let key = {};
-key.code = keyCode;
-key.isDown = false;
-key.isUp = true;
-key.press = undefined;
-key.release = undefined;
-//The `downHandler`
-key.downHandler = event => {
-if (event.keyCode === key.code) {
-if (key.isUp && key.press) key.press();
-key.isDown = true;
-key.isUp = false;
-}
-event.preventDefault();
-};
-
-//The `upHandler`
-key.upHandler = event => {
-if (event.keyCode === key.code) {
-if (key.isDown && key.release) key.release();
-key.isDown = false;
-key.isUp = true;
-}
-event.preventDefault();
-};
-
-//Attach event listeners
-window.addEventListener(
-"keydown", key.downHandler.bind(key), false
-);
-window.addEventListener(
-"keyup", key.upHandler.bind(key), false
-);
-return key;
-}
-
 let sprite, state
 
+function setupPlayer() {
+  //this funtion sets up the player in the game
+  sprite = new PIXI.Sprite(PIXI.loader.resources['images/food_truck.png'].texture)
+  sprite.anchor.y = .5
+  sprite.anchor.x = .5
+  sprite.x = appWidth / 2
+  sprite.y = appHeight - 200
+  sprite.vy = 0
+  sprite.vx = 0
+  sprite.scale.y = .3
+  sprite.scale.x = .3
+  app.stage.addChild(sprite)
+
+
+  //this section set up the keyboard presses for the player
+  let left = keyboard(37)
+      right = keyboard(39)
+
+  left.press = () => {
+    sprite.vx = -5;
+    sprite.vy = 0;
+  };
+  left.release = () => {
+    if (!right.isDown && sprite.vy === 0) {
+      sprite.vx = 0;
+    }
+  };
+  right.press = () => {
+    sprite.vx = 5;
+    sprite.vy = 0;
+  };
+  right.release = () => {
+  if (!left.isDown && sprite.vy === 0) {
+    sprite.vx = 0;
+    }
+  };
+}
+
 function setup() {
-sprite = new PIXI.Sprite(PIXI.loader.resources['images/pepe.png'].texture)
-sprite.vy = 0
-sprite.vx = 0
-sprite.scale.y = .5
-sprite.scale.x = .5
-app.stage.addChild(sprite)
+  //the setup function runs at the start of the applcation
 
-let left = keyboard(37)
-up = keyboard(38)
-right = keyboard(39)
-down = keyboard(40)
+  //this funtion sets up the player inside the game
+  setupPlayer()
 
-//Left arrow key `press` method
-left.press = () => {
-//Change the sprite's velocity when the key is pressed
-sprite.vx = -5;
-sprite.vy = 0;
-};
+  //here the state of the game is set to the play function
+  state = play
 
-//Left arrow key `release` method
-left.release = () => {
-//If the left arrow has been released, and the right arrow isn't down,
-//and the sprite isn't moving vertically:
-//Stop the sprite
-if (!right.isDown && sprite.vy === 0) {
-sprite.vx = 0;
-}
-};
-
-//Up
-up.press = () => {
-sprite.vy = -5;
-sprite.vx = 0;
-};
-up.release = () => {
-if (!down.isDown && sprite.vx === 0) {
-sprite.vy = 0;
-}
-};
-
-//Right
-right.press = () => {
-sprite.vx = 5;
-sprite.vy = 0;
-};
-right.release = () => {
-if (!left.isDown && sprite.vy === 0) {
-sprite.vx = 0;
-}
-};
-
-//Down
-down.press = () => {
-sprite.vy = 5;
-sprite.vx = 0;
-};
-down.release = () => {
-if (!up.isDown && sprite.vx === 0) {
-sprite.vy = 0;
-}
-};
-
-state = play
-app.ticker.add(delta => gameLoop(delta))
-
+  //pixi's ticker function allows the gameLoop to run 60 times per second
+  app.ticker.add(delta => gameLoop(delta))
 }
 
 function gameLoop(delta){
-state(delta)
+  //the gameLoop funtion runs 60 times per second
+  //this funtion dictates what is happening on the screen
+  state(delta)
 }
 
 function play(delta){
-sprite.y += sprite.vy
-sprite.x += sprite.vx
+  //the play funtion should only be assigned to the state variable
+  //(DONT USE IT FOR ANYTHING ELSE OR BAD THINGS WILL HAPPEN)
+  //this funtion dictates what happens during the "play state" of the game
+  sprite.y += sprite.vy
+  sprite.x += sprite.vx
+  playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
+
 }
