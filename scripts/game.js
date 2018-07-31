@@ -327,7 +327,6 @@ function play(delta){
     state = gameOver
     return
   }
-
 }
 
 function gameOver(delta){
