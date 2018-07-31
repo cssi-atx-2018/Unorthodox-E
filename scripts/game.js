@@ -6,6 +6,7 @@ if(!PIXI.utils.isWebGLSupported()){
   type = 'canvas'
 }
 
+
 //this print a message on the console. use dev tools to see
 PIXI.utils.sayHello(type)
 
@@ -30,6 +31,8 @@ PIXI.loader
         'images/orange.png'
   ])
   .load(setup)
+
+
 
 function keyboard(keyCode) {
   //this funtion can be used to add functionality to keys on the keyboard
@@ -209,6 +212,36 @@ function setupPlayer() {
 }
 
 function setup() {
+
+
+    // stage = new PIXI.Container(); //creates a stage object
+    // renderer = PIXI.autoDetectRenderer(
+    //   1024,
+    //   768,
+    //   {view:document.getElementById("game-canvas")}
+    // ); //lets Pixi select appropriate renderer
+
+    var farTexture = PIXI.Texture.fromImage("images/art.png");
+    far = new PIXI.extras.TilingSprite(farTexture, 1024, 768);
+    far.position.x = 0;
+    far.position.y = 0;
+    far.tilePosition.x = 0;
+    far.tilePosition.y = 0;
+    app.stage.addChild(far);
+
+    // var midTexture = PIXI.Texture.fromImage("resources/art.png");
+    // mid = new PIXI.extras.TilingSprite(midTexture, 512, 256);
+    // mid.position.x = 0;
+    // mid.position.y = 128;
+    // mid.tilePosition.x = 0;
+    // mid.tilePosition.y = 0;
+    // stage.addChild(mid);
+
+
+
+
+
+
   //the setup function runs at the start of the applcation
 
   //this funtion sets up the player inside the game
@@ -225,6 +258,12 @@ function setup() {
   //pixi's ticker function allows the gameLoop to run 60 times per second
   app.ticker.add(delta => gameLoop(delta))
   chooseRandomSet()
+}
+function update() {
+  far.tilePosition.y += 3;
+  // mid.tilePosition.y -= 0.64;
+  renderer.render(stage);
+  requestAnimationFrame(update);
 }
 
 function middleCarSet(){
@@ -312,6 +351,7 @@ function play(delta){
   sprite.y += sprite.vy
   sprite.x += sprite.vx
   CarCheck()
+  requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
 
   if(hitTestRectangle(car1, sprite)){
