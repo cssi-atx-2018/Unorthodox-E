@@ -1,8 +1,11 @@
 
 
 h1{
-  background-color: powderblue;
-  text-align: center;
+  background-color: #0e648e;
+  text-align: center;font-size: 100px;margin: 15px;
+  color: #029baf;
+  font-family: 'Press Start 2P', cursive;
+
 }
 
 .header{
@@ -16,7 +19,9 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: lightgrey;
+  background-color: #558b92;
+  font-family: 'Press Start 2P', cursive;
+
 }
 
 li a {
