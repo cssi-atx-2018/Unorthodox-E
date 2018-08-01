@@ -30,7 +30,7 @@ document.body.appendChild(app.view)
 //PIXI.loader takes in paths for images and renders it so that they cna be used
 //for textures
 PIXI.loader
-  .add(['images/food_truck_3.png',
+  .add(['images/food_truck_2.png',
         'images/neon_green.png',
         'images/pink.png',
         'images/orange.png',
@@ -237,7 +237,7 @@ function setUpCans(){
 
 function setupPlayer() {
   //this funtion sets up the player in the game
-  sprite = new PIXI.Sprite(PIXI.loader.resources['images/food_truck_3.png'].texture)
+  sprite = new PIXI.Sprite(PIXI.loader.resources['images/food_truck_2.png'].texture)
   sprite.anchor.y = .5
   sprite.anchor.x = .5
   sprite.x = appWidth / 2
@@ -535,6 +535,8 @@ function intro() {
 
 function startGame(){
   startGameContainer = new PIXI.Container()
+  points = 0
+  score.text = 'Your score: ' + points
 
   let style = new PIXI.TextStyle({
     fontFamily: 'Press Start 2P, cursive',
