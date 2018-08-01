@@ -34,7 +34,8 @@ PIXI.loader
         'images/neon_green.png',
         'images/pink.png',
         'images/orange.png',
-        'images/can.png'
+        'images/can.png',
+        'images/logo.png',
   ])
   .load(setup)
 
@@ -161,6 +162,7 @@ let points=0
 let gameOverContainer, startGameContainer
 let spacePressed, spacebar
 let returnPressed, returnButton
+let spriteLogo
 
 function setUpEnd(){
   gameOverContainer = new PIXI.Container()
@@ -306,8 +308,6 @@ function setup() {
     // stage.addChild(mid);
 
   //the setup function runs at the start of the applcation
-
-
 
   //this function sets up the car objects
   //setUpCars()
@@ -523,6 +523,8 @@ function intro() {
     car2 = undefined
     car3 = undefined
     setUpCars()
+
+    app.stage.removeChild(spriteLogo)
     state = play
     chooseRandomSet()
     canSet()
@@ -546,6 +548,14 @@ function startGame(){
   });
 
   let title = new PIXI.Text('press spacebar to begin', style)
+  // var img = document.createElement("img");
+  // img.src = "images/logo.png";
+
+  spriteLogo = new PIXI.Sprite(PIXI.loader.resources['images/logo.png'].texture)
+  app.stage.addChild(spriteLogo)
+
+  spriteLogo.anchor.x = -1.15
+  spriteLogo.anchor.y = -0.4
   title.anchor.x = .5
   title.anchor.y = -6
   startGameContainer.addChild(title)
