@@ -32,8 +32,6 @@ PIXI.loader
   ])
   .load(setup)
 
-
-
 function keyboard(keyCode) {
   //this funtion can be used to add functionality to keys on the keyboard
   let key = {};
