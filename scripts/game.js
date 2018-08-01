@@ -120,7 +120,9 @@ function hitTestRectangle(r1, r2) {
   }
 
   //`hit` will be either `true` or `false`
-  console.log('you got hit')
+  if(hit){
+    console.log('you got hit')
+  }
   return hit;
 };
 
@@ -158,18 +160,18 @@ function setUpCars(){
 
   car1.anchor.y = .5
   car1.anchor.x = .5
-  car1.scale.x = .3
-  car1.scale.y = .3
+  car1.scale.x = .375
+  car1.scale.y = .375
 
   car2.anchor.y = .5
   car2.anchor.x = .5
-  car2.scale.x = .3
-  car2.scale.y = .3
+  car2.scale.x = .375
+  car2.scale.y = .375
 
   car3.anchor.y = .5
   car3.anchor.x = .5
-  car3.scale.x = .3
-  car3.scale.y = .3
+  car3.scale.x = .375
+  car3.scale.y = .375
 }
 
 function setupPlayer() {
@@ -181,8 +183,8 @@ function setupPlayer() {
   sprite.y = appHeight - 200
   sprite.vy = 0
   sprite.vx = 0
-  sprite.scale.y = .3
-  sprite.scale.x = .3
+  sprite.scale.y = .375
+  sprite.scale.x = .375
   app.stage.addChild(sprite)
 
 
@@ -259,11 +261,12 @@ function setup() {
   app.ticker.add(delta => gameLoop(delta))
   chooseRandomSet()
 }
+
 function update() {
-  far.tilePosition.y += 3;
+  far.tilePosition.y += 10;
   // mid.tilePosition.y -= 0.64;
-  renderer.render(stage);
-  requestAnimationFrame(update);
+  //renderer.render(stage);
+  //requestAnimationFrame(update);
 }
 
 function middleCarSet(){
@@ -272,7 +275,7 @@ function middleCarSet(){
   app.stage.addChild(currentSet)
   console.log(currentSet)
   car1.x = appWidth / 2
-  car1.y = 0
+  car1.y = 0 - car1.height/2
 
   app.stage.addChild(currentSet)
 }
@@ -282,7 +285,7 @@ function CarCheck(){
   for(index = 0; index < currentSet.children.length; index += 1)
   {
     currentSet.children[index].y += 3
-    if(currentSet.children[index].y > appHeight){
+    if(currentSet.children[index].y > appHeight + currentSet.children[index].height/2){
       app.stage.removeChild(currentSet)
       currentSet.removeChildren()
       chooseRandomSet()
@@ -296,10 +299,10 @@ function splitCarSet(){
   currentSet.addChild(car1)
   currentSet.addChild(car3)
   app.stage.addChild(currentSet)
-  car1.x = appWidth / 3
-  car1.y = 0
-  car3.x = Math.ceil(appWidth * (2/3))
-  car3.y = 0
+  car1.x = Math.ceil(appWidth * 1/6)
+  car1.y = 0 - car1.height/2
+  car3.x = Math.ceil(appWidth * (5/6))
+  car3.y = 0 - car3.height/2
 
   app.stage.addChild(currentSet)
 }
@@ -309,10 +312,10 @@ function leftPairCarSet(){
   currentSet.addChild(car1)
   currentSet.addChild(car2)
   app.stage.addChild(currentSet)
-  car1.x = appWidth / 3
-  car1.y = 0
+  car1.x = Math.ceil(appWidth * 1/6)
+  car1.y = 0 - car1.height/2
   car2.x = appWidth / 2
-  car2.y = 0
+  car2.y = 0 - car2.height/2
 
   app.stage.addChild(currentSet)
 }
@@ -323,9 +326,9 @@ function rightPairCarSet(){
   currentSet.addChild(car3)
   app.stage.addChild(currentSet)
   car2.x = appWidth / 2
-  car2.y = 0
-  car3.x = Math.ceil(appWidth * (2/3))
-  car3.y = 0
+  car2.y = 0 - car2.height/2
+  car3.x = Math.ceil(appWidth * (5/6))
+  car3.y = 0 - car3.height/2
 
   app.stage.addChild(currentSet)
 }
@@ -336,7 +339,6 @@ function chooseRandomSet(){
   let i = Math.floor(Math.random() * sets.length)
   sets[i]()
 }
-
 
 function gameLoop(delta){
   //the gameLoop funtion runs 60 times per second
@@ -367,7 +369,6 @@ function play(delta){
     state = gameOver
     return
   }
-
 }
 
 function gameOver(delta){
