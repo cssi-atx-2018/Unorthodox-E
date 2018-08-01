@@ -7,6 +7,10 @@ if(!PIXI.utils.isWebGLSupported()){
 }
 
 
+
+// `input` will be defined elsewhere, it's a means
+// for us to capture the state of input from the player
+
 //this print a message on the console. use dev tools to see
 PIXI.utils.sayHello(type)
 
@@ -18,6 +22,9 @@ let appWidth = 512 * 2
 let app = new PIXI.Application({width: appWidth, height: appHeight});
 app.renderer.backgroundColor = 0x061639
 app.renderer.autoResize = true
+
+
+
 
 //add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view)
@@ -31,8 +38,6 @@ PIXI.loader
         'images/orange.png'
   ])
   .load(setup)
-
-
 
 function keyboard(keyCode) {
   //this funtion can be used to add functionality to keys on the keyboard
@@ -262,8 +267,8 @@ function setup() {
 function update() {
   far.tilePosition.y += 3;
   // mid.tilePosition.y -= 0.64;
-  renderer.render(stage);
-  requestAnimationFrame(update);
+  // renderer.render(stage);
+  // requestAnimationFrame(update);
 }
 
 function middleCarSet(){
@@ -372,4 +377,31 @@ function play(delta){
 
 function gameOver(delta){
   console.log('game over')
+}
+
+
+function startGame(){
+  startGameContainer = new PIXI.Container()
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 70,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  let title = new PIXI.Text('click to begin', style)
+  title.anchor.x = .5
+  title.anchor.y = .5
+  startGameContainer.addChild(title)
+  title.position.set(appWidth/2, appHeight/3)
+  app.stage.addChild(startGameContainer)
+
+
 }
