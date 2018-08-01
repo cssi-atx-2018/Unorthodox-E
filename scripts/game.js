@@ -160,8 +160,13 @@ let carVelocity = 3
 let currentSet
 let points=0
 let gameOverContainer, startGameContainer
+<<<<<<< HEAD
 let spacePressed, spacebar
 let returnPressed, returnButton
+=======
+let spacePressed
+let score
+>>>>>>> c2b15d55665f8b1a1af9e30b6875ad40b2f94bf2
 let spriteLogo
 
 function setUpEnd(){
@@ -311,12 +316,17 @@ function setup() {
 
   //this function sets up the car objects
   //setUpCars()
+<<<<<<< HEAD
+=======
+  startGame()
+
+>>>>>>> c2b15d55665f8b1a1af9e30b6875ad40b2f94bf2
   currentSet = new PIXI.Container()
 
   gameOverContainer = new PIXI.Container()
   //this function sets up the can objects
   setUpCans()
-
+  printPoints()
   setOfCans = new PIXI.Container()
 
   startGame()
@@ -478,6 +488,7 @@ function play(delta){
   sprite.x += sprite.vx
   CarCheck()
   CanCheck()
+  updatePoints()
   requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
 
@@ -567,4 +578,32 @@ function startGame(){
   app.stage.removeChild(car3)
 
   state = intro
+}
+
+function printPoints(){
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  score = new PIXI.Text('Your score: '+points, style)
+  score.text = 'Your score: '+points
+  score.anchor.x = -.05
+  score.anchor.y = -.2
+  app.stage.addChild(score)
+
+}
+
+function updatePoints(){
+  score.text = 'Your score: '+points
+
 }
