@@ -1,11 +1,11 @@
 
 
 h1{
-  background-color: #0e648e;
-  text-align: center;font-size: 100px;margin: 15px;
-  color: #029baf;
+  background-color: #f55145;
+  text-align: center;font-size: 100px;margin: 0px;
+  color: #e6e4e4;
   font-family: 'Press Start 2P', cursive;
-
+text-shadow: 7px 7px black;
 }
 
 .header{
@@ -19,7 +19,7 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #558b92;
+  background-color: #616161;
   font-family: 'Press Start 2P', cursive;
 
 }
@@ -27,10 +27,11 @@ ul {
 li a {
     float: left;
     display: block;
-    color: black;
+    color: #e7e4e4;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 10px;
     text-decoration: none;
+    text-shadow: 4px 4px black;
 }
 
 li a:hover {
