@@ -164,6 +164,7 @@ let spacePressed, spacebar
 let returnPressed, returnButton
 let score
 let spriteLogo
+let pointThreshold = 10
 
 function setUpEnd(){
   gameOverContainer = new PIXI.Container()
@@ -369,7 +370,7 @@ function CanCheck(){
   let index = 0
   for(index = 0; index < setOfCans.children.length; index += 1)
   {
-    setOfCans.children[index].y += 3
+    setOfCans.children[index].y += carVelocity
     if(hitTestRectangle(can1, sprite)){
       app.stage.removeChild(setOfCans)
       setOfCans.removeChildren()
@@ -482,7 +483,6 @@ function play(delta){
   updatePoints()
   requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
-
 
 
   if(hitTestRectangle(car1, sprite)){
@@ -598,5 +598,9 @@ function printPoints(){
 
 function updatePoints(){
   score.text = 'Your score: '+points
+  if(points >= pointThreshold){
+    carVelocity += 1
+    pointThreshold += 10
+  }
 
 }
