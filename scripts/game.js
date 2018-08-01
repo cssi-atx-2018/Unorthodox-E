@@ -155,6 +155,34 @@ function playerContain(sprite, container) {
 let sprite, state
 let car1, car2, car3
 let currentSet
+let gameOverContainer
+let spacePressed
+
+function setUpEnd(){
+  gameOverContainer = new PIXI.Container()
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 70,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  let title = new PIXI.Text('GAME OVER', style)
+  title.anchor.x = .5
+  title.anchor.y = .5
+  gameOverContainer.addChild(title)
+  title.position.set(appWidth/2, appHeight/3)
+  app.stage.addChild(gameOverContainer)
+
+  state = gameOver
+}
 
 function setUpCars(){
   car1 = new PIXI.Sprite(PIXI.loader.resources['images/neon_green.png'].texture)
@@ -233,6 +261,15 @@ function setup() {
     far.tilePosition.y = 0;
     app.stage.addChild(far);
 
+    spacebar = keyboard(32);
+
+    spacebar.press = () => {
+      spacePressed = true
+    }
+    spacebar.release = () => {
+      spacePressed = false
+    }
+
     // var midTexture = PIXI.Texture.fromImage("resources/art.png");
     // mid = new PIXI.extras.TilingSprite(midTexture, 512, 256);
     // mid.position.x = 0;
@@ -246,22 +283,26 @@ function setup() {
 
 
     startGame();
+    // update();
   //the setup function runs at the start of the applcation
 
-  //this funtion sets up the player inside the game
-  setupPlayer()
+
 
   //this function sets up the car objects
-  setUpCars()
+  //setUpCars()
 
-  currentSet = new PIXI.Container()
+  currentSet = new PIXI.Container() //holds cars that are coming down
 
-  //here the state of the game is set to the play function
-  state = play
+  //here the state of the game is set to the intro function
+  state = intro;
+
+  //this funtion sets up the player inside the game
+  //setupPlayer()
 
   //pixi's ticker function allows the gameLoop to run 60 times per second
   app.ticker.add(delta => gameLoop(delta))
-  chooseRandomSet()
+  //chooseRandomSet()
+
 }
 
 function update() {
@@ -341,6 +382,7 @@ function chooseRandomSet(){
   let i = Math.floor(Math.random() * sets.length)
   sets[i]()
 }
+//chooses car position scenarios
 
 function gameLoop(delta){
   //the gameLoop funtion runs 60 times per second
@@ -359,16 +401,19 @@ function play(delta){
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
 
   if(hitTestRectangle(car1, sprite)){
-    state = gameOver
+    //state = gameOver
+    state = setUpEnd
     return
   }
   else if(hitTestRectangle(car2, sprite))
   {
-    state = gameOver
+    //state = gameOver
+    state = setUpEnd
     return
   }
   else if(hitTestRectangle(car3, sprite)){
-    state = gameOver
+    //state = gameOver
+    state = setUpEnd
     return
   }
 }
@@ -377,6 +422,18 @@ function gameOver(delta){
   console.log('game over')
 }
 
+function intro() {
+  update();
+  if(spacePressed){
+    setupPlayer()
+    setUpCars()
+    app.stage.removeChild(startGameContainer)
+    state = play
+    chooseRandomSet()
+  }
+
+
+}
 
 function startGame(){
   startGameContainer = new PIXI.Container()
@@ -394,12 +451,10 @@ function startGame(){
     dropShadowDistance: 6,
   });
 
-  let title = new PIXI.Text('click to begin', style)
+  let title = new PIXI.Text('press spacebar to begin', style)
   title.anchor.x = .5
   title.anchor.y = -6
   startGameContainer.addChild(title)
   title.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(startGameContainer)
-
-
 }
