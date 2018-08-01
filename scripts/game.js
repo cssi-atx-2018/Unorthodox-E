@@ -155,10 +155,12 @@ function playerContain(sprite, container) {
 //is in the play states. Same thing with pause, main menu, etc.
 let sprite, state
 let car1, car2, car3, can1, can2
+let carVelocity = 3
 let currentSet
 let points=0
 let gameOverContainer, startGameContainer
-let spacePressed
+let spacePressed, spacebar
+let returnPressed, returnButton
 
 function setUpEnd(){
   gameOverContainer = new PIXI.Container()
@@ -182,6 +184,14 @@ function setUpEnd(){
   gameOverContainer.addChild(title)
   title.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(gameOverContainer)
+
+  returnButton = keyboard(16)
+  returnButton.press = () => {
+    returnPressed = true
+  }
+  returnButton.release = () => {
+    returnPressed = false
+  }
 
   state = gameOver
 }
@@ -301,15 +311,17 @@ function setup() {
 
   //this function sets up the car objects
   //setUpCars()
-  startGame()
   currentSet = new PIXI.Container()
+
+  gameOverContainer = new PIXI.Container()
   //this function sets up the can objects
   setUpCans()
 
   setOfCans = new PIXI.Container()
 
+  startGame()
+
   //here the state of the game is set to the intro function
-  state = intro;
 
   //this funtion sets up the player inside the game
   //setupPlayer()
@@ -342,7 +354,7 @@ function CarCheck(){
   let index = 0
   for(index = 0; index < currentSet.children.length; index += 1)
   {
-    currentSet.children[index].y += 3
+    currentSet.children[index].y += carVelocity
     if(currentSet.children[index].y > appHeight + currentSet.children[index].height/2){
       app.stage.removeChild(currentSet)
       currentSet.removeChildren()
@@ -377,13 +389,12 @@ function canLocationCheck(canObject) {
   if(hitTestRectangle(canObject, car1)){
     return true
   }
-  else if (hitTestRectangle(canObject, car2)) {
+  if (hitTestRectangle(canObject, car2)) {
     return true
   }
-  else if(hitTestRectangle(canObject, car3)) {
+  if(hitTestRectangle(canObject, car3)) {
     return true
   }
-
   return false
 }
 
@@ -492,14 +503,26 @@ function play(delta){
 
 function gameOver(delta){
   console.log('game over')
+
+  if(returnPressed){
+    app.stage.removeChild(sprite)
+    app.stage.removeChild(currentSet)
+    currentSet.removeChildren()
+    app.stage.removeChild(gameOverContainer)
+    app.stage.removeChild(setOfCans)
+    state = startGame
+  }
 }
 
 function intro() {
   update();
   if(spacePressed){
     setupPlayer()
-    setUpCars()
     app.stage.removeChild(startGameContainer)
+    car1 = undefined
+    car2 = undefined
+    car3 = undefined
+    setUpCars()
     state = play
     chooseRandomSet()
     canSet()
@@ -528,4 +551,10 @@ function startGame(){
   startGameContainer.addChild(title)
   title.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(startGameContainer)
+  gameOverContainer.removeChildren()
+  app.stage.removeChild(car1)
+  app.stage.removeChild(car2)
+  app.stage.removeChild(car3)
+
+  state = intro
 }
