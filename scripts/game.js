@@ -160,11 +160,8 @@ let currentSet
 let points=0
 let gameOverContainer, startGameContainer
 let spacePressed
-<<<<<<< HEAD
 let score
-=======
 let spriteLogo
->>>>>>> 2ccde9374f0f6d2bd3b5f26fdb0575da7ec7dbbd
 
 function setUpEnd(){
   gameOverContainer = new PIXI.Container()
@@ -565,7 +562,7 @@ function printPoints(){
   score.anchor.x = -.05
   score.anchor.y = -.2
   app.stage.addChild(score)
-  
+
 }
 
 function updatePoints(){
