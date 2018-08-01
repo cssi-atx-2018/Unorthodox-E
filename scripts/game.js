@@ -153,7 +153,37 @@ function playerContain(sprite, container) {
 let sprite, state
 let car1, car2, car3, can1, can2
 let currentSet
+<<<<<<< HEAD
 let points=0
+=======
+let gameOverContainer
+
+function setUpEnd(){
+  gameOverContainer = new PIXI.Container()
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 70,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  let title = new PIXI.Text('GAME OVER', style)
+  title.anchor.x = .5
+  title.anchor.y = .5
+  gameOverContainer.addChild(title)
+  title.position.set(appWidth/2, appHeight/3)
+  app.stage.addChild(gameOverContainer)
+
+  state = gameOver
+}
+>>>>>>> fd455d78e5537c8a16344a4388981584c6c5fed5
 
 function setUpCars(){
   car1 = new PIXI.Sprite(PIXI.loader.resources['images/neon_green.png'].texture)
@@ -408,16 +438,19 @@ function play(delta){
   }
 
   if(hitTestRectangle(car1, sprite)){
-    state = gameOver
+    //state = gameOver
+    state = setUpEnd
     return
   }
   else if(hitTestRectangle(car2, sprite))
   {
-    state = gameOver
+    //state = gameOver
+    state = setUpEnd
     return
   }
   else if(hitTestRectangle(car3, sprite)){
-    state = gameOver
+    //state = gameOver
+    state = setUpEnd
     return
   }
 }
