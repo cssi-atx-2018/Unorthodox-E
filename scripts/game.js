@@ -373,6 +373,20 @@ function CanCheck(){
   }
 }
 
+function canLocationCheck(canObject) {
+  if(hitTestRectangle(canObject, car1)){
+    return true
+  }
+  else if (hitTestRectangle(canObject, car2)) {
+    return true
+  }
+  else if(hitTestRectangle(canObject, car3)) {
+    return true
+  }
+
+  return false
+}
+
 function splitCarSet(){
   console.log('The split car set started')
   currentSet.addChild(car1)
@@ -420,6 +434,12 @@ function canSet(){
   let xpos = [appWidth / 2, Math.ceil(appWidth * (5/6)), Math.ceil(appWidth * 1/6)]
   can1.x = xpos[Math.floor(Math.random() * xpos.length)]
   can1.y = 0 - can1.height/2
+  while(canLocationCheck(can1)){
+    can1.x = xpos[Math.floor(Math.random() * xpos.length)]
+    can1.y = 0 - can1.height/2
+  }
+  // can1.x = xpos[Math.floor(Math.random() * xpos.length)]
+  // can1.y = 0 - can1.height/2
 
   app.stage.addChild(setOfCans)
 }
