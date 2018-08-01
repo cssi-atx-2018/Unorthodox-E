@@ -33,7 +33,8 @@ PIXI.loader
   .add(['images/food_truck.png',
         'images/neon_green.png',
         'images/pink.png',
-        'images/orange.png'
+        'images/orange.png',
+        'images/can.png'
   ])
   .load(setup)
 
@@ -153,9 +154,10 @@ function playerContain(sprite, container) {
 //If state is assigned to play that means that the appliaciton
 //is in the play states. Same thing with pause, main menu, etc.
 let sprite, state
-let car1, car2, car3
+let car1, car2, car3, can1, can2
 let currentSet
-let gameOverContainer
+let points=0
+let gameOverContainer, startGameContainer
 let spacePressed
 
 function setUpEnd(){
@@ -203,6 +205,21 @@ function setUpCars(){
   car3.anchor.x = .5
   car3.scale.x = .375
   car3.scale.y = .375
+}
+
+function setUpCans(){
+  can1 = new PIXI.Sprite(PIXI.loader.resources['images/can.png'].texture)
+  // can2 = new PIXI.Sprite(PIXI.loader.resources['images/can.png'].texture)
+
+  can1.anchor.y = .5
+  can1.anchor.x = .5
+  can1.scale.x = .375
+  can1.scale.y = .375
+
+  // car2.anchor.y = .5
+  // car2.anchor.x = .5
+  // car2.scale.x = .375
+  // car2.scale.y = .375
 }
 
 function setupPlayer() {
@@ -278,20 +295,18 @@ function setup() {
     // mid.tilePosition.y = 0;
     // stage.addChild(mid);
 
-
-
-
-
-    startGame();
-    // update();
   //the setup function runs at the start of the applcation
 
 
 
   //this function sets up the car objects
   //setUpCars()
+  startGame()
+  currentSet = new PIXI.Container()
+  //this function sets up the can objects
+  setUpCans()
 
-  currentSet = new PIXI.Container() //holds cars that are coming down
+  setOfCans = new PIXI.Container()
 
   //here the state of the game is set to the intro function
   state = intro;
@@ -301,8 +316,8 @@ function setup() {
 
   //pixi's ticker function allows the gameLoop to run 60 times per second
   app.ticker.add(delta => gameLoop(delta))
-  //chooseRandomSet()
-
+  // chooseRandomSet()
+  // canSet()
 }
 
 function update() {
@@ -332,6 +347,27 @@ function CarCheck(){
       app.stage.removeChild(currentSet)
       currentSet.removeChildren()
       chooseRandomSet()
+      return
+    }
+  }
+}
+
+function CanCheck(){
+  let index = 0
+  for(index = 0; index < setOfCans.children.length; index += 1)
+  {
+    setOfCans.children[index].y += 3
+    if(hitTestRectangle(can1, sprite)){
+      app.stage.removeChild(setOfCans)
+      setOfCans.removeChildren()
+      points+=1
+      setTimeout(canSet(), 5000);
+      console.log(points)
+    }
+    if(setOfCans.children[index].y > appHeight + setOfCans.children[index].height/2){
+      app.stage.removeChild(setOfCans)
+      setOfCans.removeChildren()
+      setTimeout(canSet(), 5000);
       return
     }
   }
@@ -376,11 +412,24 @@ function rightPairCarSet(){
   app.stage.addChild(currentSet)
 }
 
+function canSet(){
+  console.log('The can set started')
+  setOfCans.addChild(can1)
+  app.stage.addChild(setOfCans)
+  console.log(setOfCans)
+  let xpos = [appWidth / 2, Math.ceil(appWidth * (5/6)), Math.ceil(appWidth * 1/6)]
+  can1.x = xpos[Math.floor(Math.random() * xpos.length)]
+  can1.y = 0 - can1.height/2
+
+  app.stage.addChild(setOfCans)
+}
+
 let sets = [middleCarSet, splitCarSet, leftPairCarSet, rightPairCarSet]
 
 function chooseRandomSet(){
   let i = Math.floor(Math.random() * sets.length)
   sets[i]()
+  //setTimeout(canSet(), 100);
 }
 //chooses car position scenarios
 
@@ -397,8 +446,11 @@ function play(delta){
   sprite.y += sprite.vy
   sprite.x += sprite.vx
   CarCheck()
+  CanCheck()
   requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
+
+
 
   if(hitTestRectangle(car1, sprite)){
     //state = gameOver
@@ -430,9 +482,8 @@ function intro() {
     app.stage.removeChild(startGameContainer)
     state = play
     chooseRandomSet()
+    canSet()
   }
-
-
 }
 
 function startGame(){
