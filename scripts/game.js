@@ -153,9 +153,7 @@ function playerContain(sprite, container) {
 let sprite, state
 let car1, car2, car3, can1, can2
 let currentSet
-<<<<<<< HEAD
 let points=0
-=======
 let gameOverContainer
 
 function setUpEnd(){
@@ -183,7 +181,6 @@ function setUpEnd(){
 
   state = gameOver
 }
->>>>>>> fd455d78e5537c8a16344a4388981584c6c5fed5
 
 function setUpCars(){
   car1 = new PIXI.Sprite(PIXI.loader.resources['images/neon_green.png'].texture)
@@ -346,10 +343,17 @@ function CanCheck(){
   for(index = 0; index < setOfCans.children.length; index += 1)
   {
     setOfCans.children[index].y += 3
+    if(hitTestRectangle(can1, sprite)){
+      app.stage.removeChild(setOfCans)
+      setOfCans.removeChildren()
+      points+=1
+      setTimeout(canSet(), 5000);
+      console.log(points)
+    }
     if(setOfCans.children[index].y > appHeight + setOfCans.children[index].height/2){
       app.stage.removeChild(setOfCans)
       setOfCans.removeChildren()
-      canSet()
+      setTimeout(canSet(), 5000);
       return
     }
   }
@@ -404,7 +408,6 @@ function canSet(){
   can1.y = 0 - can1.height/2
 
   app.stage.addChild(setOfCans)
-  console.log('Added cans')
 }
 
 let sets = [middleCarSet, splitCarSet, leftPairCarSet, rightPairCarSet]
@@ -432,10 +435,7 @@ function play(delta){
   requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
 
-  if(hitTestRectangle(can1, sprite)){
-    points+=1
-    console.log(points)
-  }
+
 
   if(hitTestRectangle(car1, sprite)){
     //state = gameOver
