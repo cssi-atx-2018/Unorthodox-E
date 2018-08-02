@@ -231,16 +231,20 @@ function setUpCars(){
   car1.anchor.x = .5
   car1.scale.x = .375
   car1.scale.y = .375
+  car1.zOrder = 2
 
   car2.anchor.y = .5
   car2.anchor.x = .5
   car2.scale.x = .375
   car2.scale.y = .375
+  car3.zOrder = 2
 
   car3.anchor.y = .5
   car3.anchor.x = .5
   car3.scale.x = .375
   car3.scale.y = .375
+  car3.zOrder = 2
+
 }
 
 function setUpPolice(){
@@ -362,6 +366,8 @@ function setup() {
 
 function update() {
   far.tilePosition.y += 10;
+  score.zOrder = 1
+  document.getElementById('highScore').innerText = score.text
   // mid.tilePosition.y -= 0.64;
   //renderer.render(stage);
   //requestAnimationFrame(update);
