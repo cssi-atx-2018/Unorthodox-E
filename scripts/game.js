@@ -6,8 +6,6 @@ if(!PIXI.utils.isWebGLSupported()){
   type = 'canvas'
 }
 
-
-
 // `input` will be defined elsewhere, it's a means
 // for us to capture the state of input from the player
 
@@ -162,9 +160,9 @@ let carVelocity = 3
 
 let currentSet
 let points=0
-let gameOverContainer, startGameContainer
+let gameOverContainer, startGameContainer, instructionContainer
 let spacePressed, spacebar
-let returnPressed, returnButton
+let returnPressed, returnButton,  enter
 let score
 let spriteLogo
 let startTime
@@ -342,7 +340,7 @@ function setupPlayer() {
 }
 
 function setup() {
-
+    instructionContainer = new PIXI.Container()
     var farTexture = PIXI.Texture.fromImage("images/art.png");
     far = new PIXI.extras.TilingSprite(farTexture, 1024, 768);
     far.position.x = 0;
@@ -359,6 +357,22 @@ function setup() {
     spacebar.release = () => {
       spacePressed = false
     }
+
+    enter = keyboard(13);
+    enter.press = () => {
+      returnPressed = true
+    }
+    enter.release = () => {
+      returnPressed = false
+    }
+
+    // var midTexture = PIXI.Texture.fromImage("resources/art.png");
+    // mid = new PIXI.extras.TilingSprite(midTexture, 512, 256);
+    // mid.position.x = 0;
+    // mid.position.y = 128;
+    // mid.tilePosition.x = 0;
+    // mid.tilePosition.y = 0;
+    // stage.addChild(mid);
 
   //the setup function runs at the start of the applcation
 
@@ -634,7 +648,75 @@ function intro() {
     chooseRandomSet()
     canSet()
   }
+  else if (returnPressed) {
+    app.stage.removeChild(startGameContainer)
+    app.stage.removeChild(spriteLogo)
+    app.stage.addChild(instructionContainer)
+    state = setUpInstructions
+
+  }
+
 }
+
+
+function instructions() {
+  update()
+  if(spacePressed){
+    setupPlayer()
+    setUpCars()
+    app.stage.removeChild(instructionContainer)
+    state = play
+    chooseRandomSet()
+    canSet()
+  }
+
+}
+function setUpInstructions() {
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  let left = new PIXI.Text(' press <- key to move truck left', style)
+  let right = new PIXI.Text('press -> key to move truck right', style)
+  let startToPlay = new PIXI.Text('press spacebar to play', style)
+
+  left.anchor.x = 0.5
+  left.anchor.y = -3
+  right.anchor.x = 0.4
+  right.anchor.y = -5
+  startToPlay.anchor.y = .5
+  startToPlay.anchor.x = .5
+  instructionContainer.addChild(left)
+  instructionContainer.addChild(right)
+  instructionContainer.addChild(startToPlay)
+  instructionContainer.position.set(appWidth/2, appHeight/3)
+  app.stage.addChild(instructionContainer)
+  // app.stage.addChild(startGameContainer)
+  // startGameContainer.removeChild(title)
+  // startGameContainer.removeChild(instructions)
+  //startGameContainer.removeChild(or)
+
+
+  state = instructions
+
+
+    // instructions()
+
+
+}
+
+
+
 
 function startGame(){
   startGameContainer = new PIXI.Container()
@@ -655,6 +737,8 @@ function startGame(){
   });
 
   let title = new PIXI.Text('press spacebar to begin', style)
+  let or = new PIXI.Text('or', style)
+  let instructions = new PIXI.Text('press enter for instructions', style)
   // var img = document.createElement("img");
   // img.src = "images/logo.png";
 
@@ -665,7 +749,13 @@ function startGame(){
   spriteLogo.anchor.y = -0.4
   title.anchor.x = .5
   title.anchor.y = -6
+  instructions.anchor.x = -0.43
+  instructions.anchor.y = -18
+  or.anchor.x = -10
+  or.anchor.y = -16
   startGameContainer.addChild(title)
+  startGameContainer.addChild(instructions)
+  startGameContainer.addChild(or)
   title.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(startGameContainer)
   gameOverContainer.removeChildren()
@@ -705,5 +795,4 @@ function updatePoints(){
     carVelocity += 1
     pointThreshold += 10
   }
-
 }
