@@ -1,11 +1,11 @@
 
 
 h1{
-  background-color: #f55145;
+  background-color: #2cccbb;
   text-align: center;font-size: 100px;margin: 0px;
-  color: #ffe8c6;
+  color: #b1194d;
   font-family: 'Press Start 2P', cursive;
-text-shadow: 7px 7px black;
+text-shadow: 6px 6px #FF5722, 12px 12px #FF9800, 18px 18px #FFC107, 24px 24px #04aabf, 30px 30px #1f9488
 }
 
 .header{
@@ -19,7 +19,7 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #616161;
+  background-color: #2accbb;
   font-family: 'Press Start 2P', cursive;
 
 }
