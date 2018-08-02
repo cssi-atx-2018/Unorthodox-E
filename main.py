@@ -10,7 +10,7 @@ templateEnv = jinja2.Environment(loader=templateLoader)
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         qry = playerScore.query().order(playerScore.score)
-        data = {'scores':playerScore.query().order(playerScore.score).fetch(5)}
+        data = {'scores':playerScore.query().order(-playerScore.score).fetch(5)}
         template = templateEnv.get_template('index.html')
         self.response.write(template.render(data))
 

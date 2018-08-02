@@ -178,6 +178,7 @@ function setUpEnd(){
     let form = document.getElementsByName('scoreSubmit')
     form[0].submit()
   }
+  else{
 
   gameOverContainer = new PIXI.Container()
 
@@ -249,6 +250,7 @@ function setUpEnd(){
 
 
   state = gameOver
+}
 }
 
 function setUpCars(){
@@ -626,7 +628,6 @@ function gameOver(delta){
     app.stage.removeChild(gameOverContainer)
     app.stage.removeChild(setOfCans)
     app.stage.removeChild(score)
-    form[0].submit()
     state = startGame
   }
 }
@@ -668,6 +669,7 @@ function instructions() {
     state = play
     chooseRandomSet()
     canSet()
+    printPoints()
   }
 
 }
