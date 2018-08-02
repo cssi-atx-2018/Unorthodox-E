@@ -158,8 +158,9 @@ let sprite, state
 let car1, car2, car3, can1, can2
 let currentSet
 let points=0
-let gameOverContainer, startGameContainer
+let gameOverContainer, startGameContainer, instructionContainer
 let spacePressed
+let enterPressed
 let spriteLogo
 
 function setUpEnd(){
@@ -289,6 +290,14 @@ function setup() {
       spacePressed = false
     }
 
+    enter = keyboard(13);
+    enter.press = () => {
+      enterPressed = true
+    }
+    enter.release = () => {
+      enterPressed = false
+    }
+
     // var midTexture = PIXI.Texture.fromImage("resources/art.png");
     // mid = new PIXI.extras.TilingSprite(midTexture, 512, 256);
     // mid.position.x = 0;
@@ -302,20 +311,25 @@ function setup() {
   //this function sets up the car objects
   //setUpCars()
   startGame()
+
   currentSet = new PIXI.Container()
+
   //this function sets up the can objects
+
   setUpCans()
 
   setOfCans = new PIXI.Container()
 
   //here the state of the game is set to the intro function
-  state = intro;
+  // state = intro;
+
 
   //this funtion sets up the player inside the game
   //setupPlayer()
 
   //pixi's ticker function allows the gameLoop to run 60 times per second
   app.ticker.add(delta => gameLoop(delta))
+  // startGame()
   // chooseRandomSet()
   // canSet()
 }
@@ -505,7 +519,68 @@ function intro() {
     chooseRandomSet()
     canSet()
   }
+  else if (enterPressed) {
+    app.stage.removeChild(startGameContainer)
+    app.stage.removeChild(spriteLogo)
+    app.stage.addChild(instructionContainer)
+    state = setUpInstructions
+
+
 }
+
+
+function instructions() {
+  if(spacePressed){
+    setupPlayer()
+    setUpCars()
+    app.stage.removeChild(startGameContainer)
+    app.stage.removeChild(spriteLogo)
+    state = play
+    chooseRandomSet()
+    canSet()
+
+}
+function setUpInstructions() {
+  instructionContainer = new PIXI.Container()
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  let left = new PIXI.Text('<- press spacebar to begin', style)
+  let right = new PIXI.Text('press enter for instructions ->', style)
+  let startToPlay = new PIXI.Text('press spacebar to play', style)
+
+  left.anchor.x = -1.15
+  left.anchor.y = -0.4
+  right.anchor.x = .5
+  right.anchor.y = -6
+  startToPlay.anchor.y = .5
+  startToPlay.anchor.x = .5
+  instructionContainer.addChild(left)
+  instructionContainer.addChild(right)
+  instructionContainer.addChild(startToPlay)
+  title.position.set(appWidth/2, appHeight/3)
+  app.stage.addChild(instructionContainer)
+
+  state = instructions
+
+    // instructions()
+
+
+  }
+
+}
+
 
 function startGame(){
   startGameContainer = new PIXI.Container()
@@ -524,6 +599,8 @@ function startGame(){
   });
 
   let title = new PIXI.Text('press spacebar to begin', style)
+  let or = new PIXI.Text('or', style)
+  let instructions = new PIXI.Text('press enter for instructions', style)
   // var img = document.createElement("img");
   // img.src = "images/logo.png";
 
@@ -534,7 +611,16 @@ function startGame(){
   spriteLogo.anchor.y = -0.4
   title.anchor.x = .5
   title.anchor.y = -6
+  instructions.anchor.x = -0.43
+  instructions.anchor.y = -18
+  or.anchor.x = -10
+  or.anchor.y = -16
   startGameContainer.addChild(title)
+  startGameContainer.addChild(instructions)
+  startGameContainer.addChild(or)
   title.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(startGameContainer)
+
+  // state = intro;
+}
 }
