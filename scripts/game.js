@@ -36,7 +36,7 @@ PIXI.loader
         'images/orange.png',
         'images/can.png',
         'images/logo.png',
-        'images/cop_car.png',
+        'images/car.png',
   ])
   .load(setup)
 
@@ -198,6 +198,20 @@ function setUpEnd(){
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
   });
+  let style3 = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap:
+    wordWrapWidth: 200
+  });
 
   let title = new PIXI.Text('GAME OVER', style)
   let message = new PIXI.Text('press shift to return to start', style2)
@@ -249,7 +263,7 @@ function setUpCars(){
 }
 
 function setUpPolice(){
-  police = new PIXI.Sprite(PIXI.loader.resources['images/cop_car.png'].texture)
+  police = new PIXI.Sprite(PIXI.loader.resources['images/car.png'].texture)
 
   police.anchor.y = .5
   police.anchor.x = .5
