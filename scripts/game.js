@@ -162,7 +162,7 @@ let currentSet
 let points=0
 let gameOverContainer, startGameContainer, instructionContainer
 let spacePressed, spacebar
-let returnPressed, returnButton,  enter
+let returnPressed, returnButton, enter, iButton, iPressed
 let score
 let spriteLogo
 let startTime
@@ -178,7 +178,7 @@ function setUpEnd(){
     let form = document.getElementsByName('scoreSubmit')
     form[0].submit()
   }
-  else{
+
 
   gameOverContainer = new PIXI.Container()
 
@@ -247,10 +247,8 @@ function setUpEnd(){
     returnPressed = false
   }
 
-
-
   state = gameOver
-}
+
 }
 
 function setUpCars(){
@@ -366,6 +364,15 @@ function setup() {
     }
     enter.release = () => {
       returnPressed = false
+    }
+
+    iButton = keyboard(73)
+
+    iButton.press = () => {
+      iPressed = true
+    };
+    iButton.release = () => {
+      iPressed = false
     }
 
     // var midTexture = PIXI.Texture.fromImage("resources/art.png");
@@ -649,7 +656,7 @@ function intro() {
     chooseRandomSet()
     canSet()
   }
-  else if (returnPressed) {
+  else if (iPressed) {
     app.stage.removeChild(startGameContainer)
     app.stage.removeChild(spriteLogo)
     app.stage.addChild(instructionContainer)
@@ -709,6 +716,7 @@ function setUpInstructions() {
   //startGameContainer.removeChild(or)
 
 
+
   state = instructions
 
 
@@ -736,11 +744,12 @@ function startGame(){
     dropShadowBlur: 4,
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
+    align: 'center'
   });
 
   let title = new PIXI.Text('press spacebar to begin', style)
   let or = new PIXI.Text('or', style)
-  let instructions = new PIXI.Text('press enter for instructions', style)
+  let instructions = new PIXI.Text('press I for instructions', style)
   // var img = document.createElement("img");
   // img.src = "images/logo.png";
 
@@ -751,10 +760,11 @@ function startGame(){
   spriteLogo.anchor.y = -0.4
   title.anchor.x = .5
   title.anchor.y = -6
-  instructions.anchor.x = -0.43
+  instructions.anchor.x = -.56
   instructions.anchor.y = -18
   or.anchor.x = -10
   or.anchor.y = -16
+
   startGameContainer.addChild(title)
   startGameContainer.addChild(instructions)
   startGameContainer.addChild(or)
