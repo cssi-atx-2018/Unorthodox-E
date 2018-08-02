@@ -107,10 +107,10 @@ function hitTestRectangle(r1, r2) {
   combinedHalfHeights = r1.halfHeight + r2.halfHeight;
 
   //Check for a collision on the x axis
-  if (Math.abs(vx) < combinedHalfWidths) {
+  if (Math.abs(vx) + 20 < combinedHalfWidths) {
 
     //A collision might be occuring. Check for a collision on the y axis
-    if (Math.abs(vy) < combinedHalfHeights) {
+    if (Math.abs(vy) + 20 < combinedHalfHeights) {
 
       //There's definitely a collision happening
       hit = true;
@@ -201,6 +201,7 @@ function setUpEnd(){
 
   let title = new PIXI.Text('GAME OVER', style)
   let message = new PIXI.Text('press shift to return to start', style2)
+  let aboutPageMessage = new PIXI.Text('Please visit our about page to learn more about how you can help')
   title.anchor.x = .5
   title.anchor.y = .5
   message.anchor.x = .5
