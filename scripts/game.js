@@ -36,6 +36,7 @@ PIXI.loader
         'images/orange.png',
         'images/can.png',
         'images/logo.png',
+        'images/car.png',
   ])
   .load(setup)
 
@@ -155,8 +156,10 @@ function playerContain(sprite, container) {
 //If state is assigned to play that means that the appliaciton
 //is in the play states. Same thing with pause, main menu, etc.
 let sprite, state
-let car1, car2, car3, can1, can2
+
+let car1, car2, car3, can1, can2, police
 let carVelocity = 3
+
 let currentSet
 let points=0
 let gameOverContainer, startGameContainer
@@ -164,7 +167,9 @@ let spacePressed, spacebar
 let returnPressed, returnButton
 let score
 let spriteLogo
+let startTime
 let pointThreshold = 10
+
 
 function setUpEnd(){
   gameOverContainer = new PIXI.Container()
@@ -219,6 +224,15 @@ function setUpCars(){
   car3.anchor.x = .5
   car3.scale.x = .375
   car3.scale.y = .375
+}
+
+function setUpPolice(){
+  police = new PIXI.Sprite(PIXI.loader.resources['images/car.png'].texture)
+
+  police.anchor.y = .5
+  police.anchor.x = .5
+  police.scale.x = .375
+  police.scale.y = .375
 }
 
 function setUpCans(){
@@ -277,13 +291,6 @@ function setupPlayer() {
 
 function setup() {
 
-    // stage = new PIXI.Container(); //creates a stage object
-    // renderer = PIXI.autoDetectRenderer(
-    //   1024,
-    //   768,
-    //   {view:document.getElementById("game-canvas")}
-    // ); //lets Pixi select appropriate renderer
-
     var farTexture = PIXI.Texture.fromImage("images/art.png");
     far = new PIXI.extras.TilingSprite(farTexture, 1024, 768);
     far.position.x = 0;
@@ -301,23 +308,20 @@ function setup() {
       spacePressed = false
     }
 
-    // var midTexture = PIXI.Texture.fromImage("resources/art.png");
-    // mid = new PIXI.extras.TilingSprite(midTexture, 512, 256);
-    // mid.position.x = 0;
-    // mid.position.y = 128;
-    // mid.tilePosition.x = 0;
-    // mid.tilePosition.y = 0;
-    // stage.addChild(mid);
-
   //the setup function runs at the start of the applcation
 
   //this function sets up the car objects
   //setUpCars()
+
+  startTime = new Date()
+  startGame()
+
   currentSet = new PIXI.Container()
 
   gameOverContainer = new PIXI.Container()
   //this function sets up the can objects
   setUpCans()
+  setUpPolice()
   printPoints()
   setOfCans = new PIXI.Container()
 
@@ -350,6 +354,18 @@ function middleCarSet(){
   car1.y = 0 - car1.height/2
 
   app.stage.addChild(currentSet)
+}
+
+function policeSet(){
+  setUpPolice()
+  console.log('The police Set started')
+  //app.stage.addChild(police)
+  console.log(police)
+  let xpos = [appWidth / 3, Math.ceil(appWidth * (2/3))]
+  police.x = xpos[Math.floor(Math.random() * xpos.length)]
+  police.y = 0 - police.height/2
+
+  app.stage.addChild(police)
 }
 
 function CarCheck(){
@@ -385,6 +401,18 @@ function CanCheck(){
       return
     }
   }
+}
+
+function policeCheck(){
+  police.y += 10
+  if(police.y > appHeight + police.height/2){
+    app.stage.removeChild(police)
+    // policeSet()
+    //setTimeout(policeSet, 5000);
+    // setTimeout(policeSet(), Math.random()*100000+5000);
+    return
+  }
+
 }
 
 function canLocationCheck(canObject) {
@@ -478,8 +506,14 @@ function play(delta){
   //this funtion dictates what happens during the "play state" of the game
   sprite.y += sprite.vy
   sprite.x += sprite.vx
+  if((new Date()) - startTime >= 5000)
+  {
+    policeSet()
+    startTime = new Date()
+  }
   CarCheck()
   CanCheck()
+  policeCheck()
   updatePoints()
   requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
@@ -497,6 +531,11 @@ function play(delta){
     return
   }
   else if(hitTestRectangle(car3, sprite)){
+    //state = gameOver
+    state = setUpEnd
+    return
+  }
+  else if(hitTestRectangle(police, sprite)){
     //state = gameOver
     state = setUpEnd
     return
