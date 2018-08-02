@@ -6,8 +6,6 @@ if(!PIXI.utils.isWebGLSupported()){
   type = 'canvas'
 }
 
-
-
 // `input` will be defined elsewhere, it's a means
 // for us to capture the state of input from the player
 
@@ -30,12 +28,13 @@ document.body.appendChild(app.view)
 //PIXI.loader takes in paths for images and renders it so that they cna be used
 //for textures
 PIXI.loader
-  .add(['images/food_truck.png',
+  .add(['images/food_truck_2.png',
         'images/neon_green.png',
         'images/pink.png',
         'images/orange.png',
         'images/can.png',
         'images/logo.png',
+        'images/car.png',
   ])
   .load(setup)
 
@@ -155,13 +154,20 @@ function playerContain(sprite, container) {
 //If state is assigned to play that means that the appliaciton
 //is in the play states. Same thing with pause, main menu, etc.
 let sprite, state
-let car1, car2, car3, can1, can2
+
+let car1, car2, car3, can1, can2, police
+let carVelocity = 3
+
 let currentSet
 let points=0
 let gameOverContainer, startGameContainer, instructionContainer
-let spacePressed
-let enterPressed
+let spacePressed, spacebar
+let returnPressed, returnButton,  enter
+let score
 let spriteLogo
+let startTime
+let pointThreshold = 10
+
 
 function setUpEnd(){
   gameOverContainer = new PIXI.Container()
@@ -178,13 +184,38 @@ function setUpEnd(){
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
   });
+  let style2 = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
 
   let title = new PIXI.Text('GAME OVER', style)
+  let message = new PIXI.Text('press shift to return to start', style2)
   title.anchor.x = .5
   title.anchor.y = .5
+  message.anchor.x = .5
+  message.anchor.y = .5
   gameOverContainer.addChild(title)
+  gameOverContainer.addChild(message)
   title.position.set(appWidth/2, appHeight/3)
+  message.position.set(appWidth/2, appHeight * 5/7)
   app.stage.addChild(gameOverContainer)
+
+  returnButton = keyboard(16)
+  returnButton.press = () => {
+    returnPressed = true
+  }
+  returnButton.release = () => {
+    returnPressed = false
+  }
 
   state = gameOver
 }
@@ -198,16 +229,29 @@ function setUpCars(){
   car1.anchor.x = .5
   car1.scale.x = .375
   car1.scale.y = .375
+  car1.zOrder = 2
 
   car2.anchor.y = .5
   car2.anchor.x = .5
   car2.scale.x = .375
   car2.scale.y = .375
+  car3.zOrder = 2
 
   car3.anchor.y = .5
   car3.anchor.x = .5
   car3.scale.x = .375
   car3.scale.y = .375
+  car3.zOrder = 2
+
+}
+
+function setUpPolice(){
+  police = new PIXI.Sprite(PIXI.loader.resources['images/car.png'].texture)
+
+  police.anchor.y = .5
+  police.anchor.x = .5
+  police.scale.x = .375
+  police.scale.y = .375
 }
 
 function setUpCans(){
@@ -227,7 +271,7 @@ function setUpCans(){
 
 function setupPlayer() {
   //this funtion sets up the player in the game
-  sprite = new PIXI.Sprite(PIXI.loader.resources['images/food_truck.png'].texture)
+  sprite = new PIXI.Sprite(PIXI.loader.resources['images/food_truck_2.png'].texture)
   sprite.anchor.y = .5
   sprite.anchor.x = .5
   sprite.x = appWidth / 2
@@ -265,14 +309,7 @@ function setupPlayer() {
 }
 
 function setup() {
-
-    // stage = new PIXI.Container(); //creates a stage object
-    // renderer = PIXI.autoDetectRenderer(
-    //   1024,
-    //   768,
-    //   {view:document.getElementById("game-canvas")}
-    // ); //lets Pixi select appropriate renderer
-
+    instructionContainer = new PIXI.Container()
     var farTexture = PIXI.Texture.fromImage("images/art.png");
     far = new PIXI.extras.TilingSprite(farTexture, 1024, 768);
     far.position.x = 0;
@@ -292,10 +329,10 @@ function setup() {
 
     enter = keyboard(13);
     enter.press = () => {
-      enterPressed = true
+      returnPressed = true
     }
     enter.release = () => {
-      enterPressed = false
+      returnPressed = false
     }
 
     // var midTexture = PIXI.Texture.fromImage("resources/art.png");
@@ -310,32 +347,41 @@ function setup() {
 
   //this function sets up the car objects
   //setUpCars()
-  startGame()
 
-  currentSet = new PIXI.Container()
+    startTime = new Date()
+    // startGame()
+
+    currentSet = new PIXI.Container()
+
+    gameOverContainer = new PIXI.Container()
+    console.log(gameOverContainer)
+
+    score = new PIXI.Text('Your score: '+points)
 
   //this function sets up the can objects
+    setUpCans()
+    setUpPolice()
+    // printPoints()
+    setOfCans = new PIXI.Container()
 
-  setUpCans()
 
-  setOfCans = new PIXI.Container()
 
   //here the state of the game is set to the intro function
-  // state = intro;
-
 
   //this funtion sets up the player inside the game
   //setupPlayer()
 
   //pixi's ticker function allows the gameLoop to run 60 times per second
-  app.ticker.add(delta => gameLoop(delta))
-  // startGame()
+    app.ticker.add(delta => gameLoop(delta))
+    startGame()
   // chooseRandomSet()
   // canSet()
 }
 
 function update() {
   far.tilePosition.y += 10;
+  score.zOrder = 1
+  document.getElementById('highScore').innerText = score.text
   // mid.tilePosition.y -= 0.64;
   //renderer.render(stage);
   //requestAnimationFrame(update);
@@ -352,11 +398,23 @@ function middleCarSet(){
   app.stage.addChild(currentSet)
 }
 
+function policeSet(){
+  setUpPolice()
+  console.log('The police Set started')
+  //app.stage.addChild(police)
+  console.log(police)
+  let xpos = [appWidth / 3, Math.ceil(appWidth * (2/3))]
+  police.x = xpos[Math.floor(Math.random() * xpos.length)]
+  police.y = 0 - police.height/2
+
+  app.stage.addChild(police)
+}
+
 function CarCheck(){
   let index = 0
   for(index = 0; index < currentSet.children.length; index += 1)
   {
-    currentSet.children[index].y += 3
+    currentSet.children[index].y += carVelocity
     if(currentSet.children[index].y > appHeight + currentSet.children[index].height/2){
       app.stage.removeChild(currentSet)
       currentSet.removeChildren()
@@ -370,7 +428,7 @@ function CanCheck(){
   let index = 0
   for(index = 0; index < setOfCans.children.length; index += 1)
   {
-    setOfCans.children[index].y += 3
+    setOfCans.children[index].y += carVelocity
     if(hitTestRectangle(can1, sprite)){
       app.stage.removeChild(setOfCans)
       setOfCans.removeChildren()
@@ -387,17 +445,28 @@ function CanCheck(){
   }
 }
 
+function policeCheck(){
+  police.y += 10
+  if(police.y > appHeight + police.height/2){
+    app.stage.removeChild(police)
+    // policeSet()
+    //setTimeout(policeSet, 5000);
+    // setTimeout(policeSet(), Math.random()*100000+5000);
+    return
+  }
+
+}
+
 function canLocationCheck(canObject) {
   if(hitTestRectangle(canObject, car1)){
     return true
   }
-  else if (hitTestRectangle(canObject, car2)) {
+  if (hitTestRectangle(canObject, car2)) {
     return true
   }
-  else if(hitTestRectangle(canObject, car3)) {
+  if(hitTestRectangle(canObject, car3)) {
     return true
   }
-
   return false
 }
 
@@ -479,11 +548,17 @@ function play(delta){
   //this funtion dictates what happens during the "play state" of the game
   sprite.y += sprite.vy
   sprite.x += sprite.vx
+  if((new Date()) - startTime >= 5000)
+  {
+    policeSet()
+    startTime = new Date()
+  }
   CarCheck()
   CanCheck()
+  policeCheck()
+  updatePoints()
   requestAnimationFrame(update);
   playerContain(sprite, {x: 0, y: 0, width: appWidth, height: appHeight})
-
 
 
   if(hitTestRectangle(car1, sprite)){
@@ -502,46 +577,69 @@ function play(delta){
     state = setUpEnd
     return
   }
+  else if(hitTestRectangle(police, sprite)){
+    //state = gameOver
+    state = setUpEnd
+    return
+  }
 }
 
 function gameOver(delta){
   console.log('game over')
+
+  if(returnPressed){
+    app.stage.removeChild(sprite)
+    app.stage.removeChild(police)
+    app.stage.removeChild(currentSet)
+    currentSet.removeChildren()
+    app.stage.removeChild(gameOverContainer)
+    app.stage.removeChild(setOfCans)
+    app.stage.removeChild(score)
+    state = startGame
+  }
 }
 
 function intro() {
   update();
   if(spacePressed){
     setupPlayer()
-    setUpCars()
     app.stage.removeChild(startGameContainer)
+    car1 = undefined
+    car2 = undefined
+    car3 = undefined
+    setUpCars()
+    startTime = new Date()
+
     app.stage.removeChild(spriteLogo)
     state = play
+    printPoints()
     chooseRandomSet()
     canSet()
   }
-  else if (enterPressed) {
+  else if (returnPressed) {
     app.stage.removeChild(startGameContainer)
     app.stage.removeChild(spriteLogo)
     app.stage.addChild(instructionContainer)
     state = setUpInstructions
 
+  }
 
 }
 
 
 function instructions() {
+  update()
   if(spacePressed){
     setupPlayer()
     setUpCars()
-    app.stage.removeChild(startGameContainer)
-    app.stage.removeChild(spriteLogo)
+    app.stage.removeChild(instructionContainer)
     state = play
     chooseRandomSet()
     canSet()
+  }
 
 }
 function setUpInstructions() {
-  instructionContainer = new PIXI.Container()
 
   let style = new PIXI.TextStyle({
     fontFamily: 'Press Start 2P, cursive',
@@ -556,34 +654,42 @@ function setUpInstructions() {
     dropShadowDistance: 6,
   });
 
-  let left = new PIXI.Text('<- press spacebar to begin', style)
-  let right = new PIXI.Text('press enter for instructions ->', style)
+  let left = new PIXI.Text(' press <- key to move truck left', style)
+  let right = new PIXI.Text('press -> key to move truck right', style)
   let startToPlay = new PIXI.Text('press spacebar to play', style)
 
-  left.anchor.x = -1.15
-  left.anchor.y = -0.4
-  right.anchor.x = .5
-  right.anchor.y = -6
+  left.anchor.x = 0.5
+  left.anchor.y = -3
+  right.anchor.x = 0.4
+  right.anchor.y = -5
   startToPlay.anchor.y = .5
   startToPlay.anchor.x = .5
   instructionContainer.addChild(left)
   instructionContainer.addChild(right)
   instructionContainer.addChild(startToPlay)
-  title.position.set(appWidth/2, appHeight/3)
+  instructionContainer.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(instructionContainer)
+  // app.stage.addChild(startGameContainer)
+  // startGameContainer.removeChild(title)
+  // startGameContainer.removeChild(instructions)
+  //startGameContainer.removeChild(or)
+
 
   state = instructions
+
 
     // instructions()
 
 
-  }
-
 }
+
+
 
 
 function startGame(){
   startGameContainer = new PIXI.Container()
+  points = 0
+  score.text = 'Your score: ' + points
 
   let style = new PIXI.TextStyle({
     fontFamily: 'Press Start 2P, cursive',
@@ -620,7 +726,41 @@ function startGame(){
   startGameContainer.addChild(or)
   title.position.set(appWidth/2, appHeight/3)
   app.stage.addChild(startGameContainer)
+  gameOverContainer.removeChildren()
+  app.stage.removeChild(car1)
+  app.stage.removeChild(car2)
+  app.stage.removeChild(car3)
 
-  // state = intro;
+  state = intro
 }
+
+function printPoints(){
+
+  let style = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
+
+  score = new PIXI.Text('Your score: '+points, style)
+  score.text = 'Your score: '+points
+  score.anchor.x = -.05
+  score.anchor.y = -.2
+  app.stage.addChild(score)
+
+}
+
+function updatePoints(){
+  score.text = 'Your score: '+points
+  if(points >= pointThreshold){
+    carVelocity += 1
+    pointThreshold += 10
+  }
 }
