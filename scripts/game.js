@@ -170,6 +170,16 @@ let pointThreshold = 10
 
 
 function setUpEnd(){
+
+  let playerResponse = prompt("Would you like to sumbit you score? (y/n)")
+  if(playerResponse === 'y'){
+    let username = prompt("Please enter a nickname.")
+    document.getElementById('username').value = username
+    let form = document.getElementsByName('scoreSubmit')
+    form[0].submit()
+  }
+  else{
+
   gameOverContainer = new PIXI.Container()
 
   let style = new PIXI.TextStyle({
@@ -237,7 +247,10 @@ function setUpEnd(){
     returnPressed = false
   }
 
+
+
   state = gameOver
+}
 }
 
 function setUpCars(){
@@ -401,7 +414,7 @@ function setup() {
 function update() {
   far.tilePosition.y += 10;
   score.zOrder = 1
-  document.getElementById('highScore').innerText = score.text
+  document.getElementById('score').value = points
   // mid.tilePosition.y -= 0.64;
   //renderer.render(stage);
   //requestAnimationFrame(update);
@@ -656,6 +669,7 @@ function instructions() {
     state = play
     chooseRandomSet()
     canSet()
+    printPoints()
   }
 
 }
