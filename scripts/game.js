@@ -36,7 +36,7 @@ PIXI.loader
         'images/orange.png',
         'images/can.png',
         'images/logo.png',
-        'images/car.png',
+        'images/cop_car.png',
   ])
   .load(setup)
 
@@ -249,7 +249,7 @@ function setUpCars(){
 }
 
 function setUpPolice(){
-  police = new PIXI.Sprite(PIXI.loader.resources['images/car.png'].texture)
+  police = new PIXI.Sprite(PIXI.loader.resources['images/cop_car.png'].texture)
 
   police.anchor.y = .5
   police.anchor.x = .5
