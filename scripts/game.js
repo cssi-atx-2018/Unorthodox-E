@@ -178,7 +178,7 @@ function setUpEnd(){
     let form = document.getElementsByName('scoreSubmit')
     form[0].submit()
   }
-  else{
+
 
   gameOverContainer = new PIXI.Container()
 
@@ -247,10 +247,8 @@ function setUpEnd(){
     returnPressed = false
   }
 
-
-
   state = gameOver
-}
+
 }
 
 function setUpCars(){
