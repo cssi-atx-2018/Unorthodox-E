@@ -5,7 +5,20 @@ h1{
   text-align: center;font-size: 100px;margin: 0px;
   color: #b1194d;
   font-family: 'Press Start 2P', cursive;
-text-shadow: 6px 6px #FF5722, 12px 12px #FF9800, 18px 18px #FFC107, 24px 24px #04aabf, 30px 30px #1f9488
+  text-shadow: 6px 6px #FF5722, 12px 12px #FF9800, 18px 18px #FFC107, 24px 24px #04aabf, 30px 30px #1f9488
+}
+
+h2{
+  font-family: 'Press Start 2P', cursive;
+}
+
+ol{
+  font-family: 'Press Start 2P', cursive;
+}
+
+p{
+  font-family: "Times New Roman", Times, serif;
+  font-size: 24px;
 }
 
 .header{
@@ -41,6 +54,12 @@ li a:hover {
 .active {
     background-color: powderblue;
 }
+
+.scores {
+  text-align: center;
+}
+
+
 
 canvas{
     display: flex;
