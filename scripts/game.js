@@ -186,12 +186,29 @@ function setUpEnd(){
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
   });
+  let style2 = new PIXI.TextStyle({
+    fontFamily: 'Press Start 2P, cursive',
+    fontSize: 20,
+    fill: "white",
+    stroke: '#ff3300',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+  });
 
   let title = new PIXI.Text('GAME OVER', style)
+  let message = new PIXI.Text('press shift to return to start', style2)
   title.anchor.x = .5
   title.anchor.y = .5
+  message.anchor.x = .5
+  message.anchor.y = .5
   gameOverContainer.addChild(title)
+  gameOverContainer.addChild(message)
   title.position.set(appWidth/2, appHeight/3)
+  message.position.set(appWidth/2, appHeight * 5/7)
   app.stage.addChild(gameOverContainer)
 
   returnButton = keyboard(16)
@@ -313,19 +330,23 @@ function setup() {
   //this function sets up the car objects
   //setUpCars()
 
-  startTime = new Date()
-  startGame()
+    startTime = new Date()
+    // startGame()
 
-  currentSet = new PIXI.Container()
+    currentSet = new PIXI.Container()
 
-  gameOverContainer = new PIXI.Container()
+    gameOverContainer = new PIXI.Container()
+    console.log(gameOverContainer)
+
+    score = new PIXI.Text('Your score: '+points)
+
   //this function sets up the can objects
-  setUpCans()
-  setUpPolice()
-  printPoints()
-  setOfCans = new PIXI.Container()
+    setUpCans()
+    setUpPolice()
+    // printPoints()
+    setOfCans = new PIXI.Container()
 
-  startGame()
+
 
   //here the state of the game is set to the intro function
 
@@ -333,7 +354,8 @@ function setup() {
   //setupPlayer()
 
   //pixi's ticker function allows the gameLoop to run 60 times per second
-  app.ticker.add(delta => gameLoop(delta))
+    app.ticker.add(delta => gameLoop(delta))
+    startGame()
   // chooseRandomSet()
   // canSet()
 }
@@ -547,10 +569,12 @@ function gameOver(delta){
 
   if(returnPressed){
     app.stage.removeChild(sprite)
+    app.stage.removeChild(police)
     app.stage.removeChild(currentSet)
     currentSet.removeChildren()
     app.stage.removeChild(gameOverContainer)
     app.stage.removeChild(setOfCans)
+    app.stage.removeChild(score)
     state = startGame
   }
 }
@@ -564,9 +588,11 @@ function intro() {
     car2 = undefined
     car3 = undefined
     setUpCars()
+    startTime = new Date()
 
     app.stage.removeChild(spriteLogo)
     state = play
+    printPoints()
     chooseRandomSet()
     canSet()
   }
