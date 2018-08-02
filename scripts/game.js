@@ -107,10 +107,10 @@ function hitTestRectangle(r1, r2) {
   combinedHalfHeights = r1.halfHeight + r2.halfHeight;
 
   //Check for a collision on the x axis
-  if (Math.abs(vx) + 20 < combinedHalfWidths) {
+  if (Math.abs(vx) + 25 < combinedHalfWidths) {
 
     //A collision might be occuring. Check for a collision on the y axis
-    if (Math.abs(vy) + 20 < combinedHalfHeights) {
+    if (Math.abs(vy) + 25 < combinedHalfHeights) {
 
       //There's definitely a collision happening
       hit = true;
@@ -209,21 +209,26 @@ function setUpEnd(){
     dropShadowBlur: 4,
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
-    wordWrap:
-    wordWrapWidth: 200
+    wordWrap: true,
+    wordWrapWidth: 500,
+    align: 'center'
   });
 
   let title = new PIXI.Text('GAME OVER', style)
   let message = new PIXI.Text('press shift to return to start', style2)
-  let aboutPageMessage = new PIXI.Text('Please visit our about page to learn more about how you can help')
+  let aboutPageMessage = new PIXI.Text('Please visit our about page to learn more about how you can help end hunger.', style3)
   title.anchor.x = .5
   title.anchor.y = .5
   message.anchor.x = .5
   message.anchor.y = .5
+  aboutPageMessage.anchor.x = .5
+  aboutPageMessage.anchor.y = .5
   gameOverContainer.addChild(title)
   gameOverContainer.addChild(message)
+  gameOverContainer.addChild(aboutPageMessage)
   title.position.set(appWidth/2, appHeight/3)
-  message.position.set(appWidth/2, appHeight * 5/7)
+  message.position.set(appWidth/2, appHeight/2)
+  aboutPageMessage.position.set(appWidth/2, appHeight * 5/7)
   app.stage.addChild(gameOverContainer)
 
   returnButton = keyboard(16)
