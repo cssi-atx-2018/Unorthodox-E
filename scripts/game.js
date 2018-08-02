@@ -172,6 +172,15 @@ let pointThreshold = 10
 
 
 function setUpEnd(){
+
+  let playerResponse = prompt("Would you like to sumbit you score? (y/n)")
+  if(playerResponse === 'y'){
+    let username = prompt("Please enter a nickname.")
+    document.getElementById('username').value = username
+    let form = document.getElementsByName('scoreSubmit')
+    form[0].submit()
+  }
+
   gameOverContainer = new PIXI.Container()
 
   let style = new PIXI.TextStyle({
@@ -238,6 +247,8 @@ function setUpEnd(){
   returnButton.release = () => {
     returnPressed = false
   }
+
+
 
   state = gameOver
 }
@@ -387,7 +398,7 @@ function setup() {
 function update() {
   far.tilePosition.y += 10;
   score.zOrder = 1
-  document.getElementById('highScore').innerText = score.text
+  document.getElementById('score').value = points
   // mid.tilePosition.y -= 0.64;
   //renderer.render(stage);
   //requestAnimationFrame(update);
@@ -601,6 +612,7 @@ function gameOver(delta){
     app.stage.removeChild(gameOverContainer)
     app.stage.removeChild(setOfCans)
     app.stage.removeChild(score)
+    form[0].submit()
     state = startGame
   }
 }
