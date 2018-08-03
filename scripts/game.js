@@ -171,7 +171,7 @@ let pointThreshold = 10
 
 function setUpEnd(){
 
-  let playerResponse = prompt("Would you like to sumbit you score? (y/n)")
+  let playerResponse = prompt("Would you like to submit you score? (y/n)")
   if(playerResponse === 'y'){
     let username = prompt("Please enter a nickname.")
     document.getElementById('username').value = username
